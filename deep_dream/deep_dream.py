@@ -43,10 +43,10 @@ result_prefix = args.result_prefix
 # You can tweak these setting to obtain new visual effects.
 settings = {
     'features': {
-        'mixed2': 0.2,
-        'mixed3': 0.5,
-        'mixed4': 2.,
-        'mixed5': 1.5,
+        'mixed2': 0.4,
+        'mixed3': 0.1,
+        'mixed4': 2.5,
+        'mixed5': 1,
     },
 }
 
@@ -163,8 +163,8 @@ and compare the result to the (resized) original image.
 step = 0.01  # Gradient ascent step size
 num_octave = 3  # Number of scales at which to run gradient ascent
 octave_scale = 1.4  # Size ratio between scales
-iterations = 20  # Number of ascent steps per scale
-max_loss = 10.
+iterations = 40  # Number of ascent steps per scale
+max_loss = 10.0
 
 img = preprocess_image(base_image_path)
 if K.image_data_format() == 'channels_first':
