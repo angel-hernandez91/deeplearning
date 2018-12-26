@@ -30,15 +30,69 @@ X = X.values
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
-exit()
 
+# Making the ANN
+import keras
+from keras.models import Sequential #for initalizing the neural net
+from keras.layers import Dense #for making layers
 
-# Fitting classifier to the Training set
-# Create your classifier here
+#For a problem like churn we're dealing with a classification problem
+#We first initialize the classifier
+classifier = Sequential()
+
+#adding layers to the ANN -- inital layer, and first hidden layer
+classifier.add(
+	Dense(
+		output_dim = 6, #number of hidden layer nodes
+		init= 'uniform', #how the weights are distributed on the inital nodes 
+		activation='relu', #activation function
+		input_dim=11 #number of nodes to start with, just match the columns in your feature data
+		)
+	)
+#adding the second hidden layer
+classifier.add(
+	Dense(
+		output_dim = 6, #number of hidden layer nodes
+		init= 'uniform', #how the weights are distributed on the inital nodes 
+		activation='relu', #activation function
+		)
+	)
+
+#adding the output layer
+classifier.add(
+	Dense(
+		output_dim=1, #there is only one outcome when binary
+		init='uniform',
+		activation='sigmoid' #chose signmoid because likelyhood of churn is on a specturm -- lets us rank, also either 1, or 0, so good choice
+		)
+	)
+
+#Compiling the ANN
+classifier.compile(
+	optimizer='adam', #a very efficient sochastic gradient descent algorithm
+	loss='binary_crossentropy', #categorical_crossentrophy if more non-binary -- choices can correpsond to the final activation function
+	metrics=['accuracy'] #list of metrics to evaluate 
+	)
+
+#Fit the model to the training set
+classifier.fit(
+	X_train, 
+	y_train, 
+	batch_size=10,
+	nb_epoch=100
+	)
 
 # Predicting the Test set results
 y_pred = classifier.predict(X_test)
+y_pred = (y_pred > 0.5)
+
 
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
+print(cm)
+#accuracy
+print((cm[0][0] + cm[1][1]) / 2000)
+
+##Now we Evaluate the ANN
+
