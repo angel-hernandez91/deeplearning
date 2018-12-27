@@ -102,6 +102,7 @@ from sklearn.model_selection import cross_val_score
 from keras.models import Sequential
 from keras.layers import Dense
 
+#wrap the classifier into a function
 def build_classifier():
 	classifier = Sequential()
 	classifier.add(Dense(
@@ -130,18 +131,21 @@ def build_classifier():
 		)
 	return classifier
 
+#create the classifier that will cross fold
+#this part is equivalent to .fit()
 classifier = KerasClassifier(
 	build_fn=build_classifier,
 	batch_size=10,
 	nb_epoch=100
 	)
 
+#runs the validation
 accuracies = cross_val_score(
 	estimator=classifier,
-	X=X_train,
-	y=y_train,
-	cv=10, 
-	n_job=-1
+	X=X_train, #train set
+	y=y_train, #labels
+	cv=10,  #number of times to run the model
+	n_job=-1 #how man cpu's to use
 	)
 mean = accuracies.mean()
 variance = accuracies.std()
