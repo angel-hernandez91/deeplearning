@@ -94,5 +94,55 @@ print(cm)
 #accuracy
 print((cm[0][0] + cm[1][1]) / 2000)
 
-##Now we Evaluate the ANN
+##Now we Evaluate the ANN using k-fold cross validation with k=10
+#The idea is that we preform multiple rounds of training and evaluate the results
+#Average Accuracy of the 10 rounds is used to validate the model
+from keras.wrappers.scikit_learn import KerasClassifier
+from sklearn.model_selection import cross_val_score
+from keras.models import Sequential
+from keras.layers import Dense
+
+def build_classifier():
+	classifier = Sequential()
+	classifier.add(Dense(
+		output_dim=6,
+		init='uniform',
+		activation='relu',
+		input_dim=11
+		)
+	)
+	classifier.add(Dense(
+		output_dim=6,
+		init='uniform',
+		activation='relu'
+		)
+	)
+	classifier.add(Dense(
+		output_dim=6,
+		init='uniform',
+		activation='sigmoid'
+		)
+	)
+	classifier.compile(
+		optimizer='adam',
+		loss='binary_crossentropy',
+		metrics=['accuracy']
+		)
+	return classifier
+
+classifier = KerasClassifier(
+	build_fn=build_classifier,
+	batch_size=10,
+	nb_epoch=100
+	)
+
+accuracies = cross_val_score(
+	estimator=classifier,
+	X=X_train,
+	y=y_train,
+	cv=10, 
+	n_job=-1
+	)
+mean = accuracies.mean()
+variance = accuracies.std()
 
