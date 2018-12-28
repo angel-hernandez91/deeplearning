@@ -35,6 +35,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 import keras
 # from keras.models import Sequential #for initalizing the neural net
 # from keras.layers import Dense #for making layers
+# from keras.layers import  Dropout #Dropout randomly disables neurons -- used to prevent overfitting, or correct it. Overfittign occurs when correlations become to tight
+#by using dropout we remove the possibility of this occuring since different neurons are used at each pass
 
 # #For a problem like churn we're dealing with a classification problem
 # #We first initialize the classifier
@@ -49,6 +51,7 @@ import keras
 # 		input_dim=11 #number of nodes to start with, just match the columns in your feature data
 # 		)
 # 	)
+# classifier.add(Dropout(p=0.1)) #start low, don't go over 4.5 or you right underfitting
 # #adding the second hidden layer
 # classifier.add(
 # 	Dense(
@@ -57,6 +60,7 @@ import keras
 # 		activation='relu', #activation function
 # 		)
 # 	)
+# classifier.add(Dropout(p=0.1))
 
 # #adding the output layer
 # classifier.add(
@@ -86,7 +90,7 @@ import keras
 # y_pred = classifier.predict(X_test)
 # y_pred = (y_pred > 0.5)
 
-
+# exit()
 # # Making the Confusion Matrix
 # from sklearn.metrics import confusion_matrix
 # cm = confusion_matrix(y_test, y_pred)
@@ -106,22 +110,29 @@ import keras
 # def build_classifier():
 # 	classifier = Sequential()
 # 	classifier.add(Dense(
-# 		output_dim=6,
-# 		init='uniform',
+# 		units=6,
+# 		kernel_initializer='uniform',
 # 		activation='relu',
 # 		input_dim=11
 # 		)
 # 	)
 # 	classifier.add(Dense(
-# 		output_dim=6,
-# 		init='uniform',
+# 		units=6,
+# 		kernel_initializer='uniform',
 # 		activation='relu'
 # 		)
 # 	)
 # 	classifier.add(Dense(
-# 		output_dim=6,
-# 		init='uniform',
+# 		units=6,
+# 		kernel_initializer='uniform',
 # 		activation='sigmoid'
+# 		)
+# 	)
+# 	classifier.add(
+# 	Dense(
+# 		units=1, #there is only one outcome when binary
+# 		kernel_initializer='uniform',
+# 		activation='sigmoid' #chose signmoid because likelyhood of churn is on a specturm -- lets us rank, also either 1, or 0, so good choice
 # 		)
 # 	)
 # 	classifier.compile(
@@ -136,7 +147,7 @@ import keras
 # classifier = KerasClassifier(
 # 	build_fn=build_classifier,
 # 	batch_size=10,
-# 	nb_epoch=100
+# 	epochs=100
 # 	)
 
 # #runs the validation
@@ -145,10 +156,15 @@ import keras
 # 	X=X_train, #train set
 # 	y=y_train, #labels
 # 	cv=10,  #number of times to run the model
-# 	n_job=-1 #how man cpu's to use
+# 	n_jobs=-1 #how man cpu's to use
 # 	)
+
 # mean = accuracies.mean()
 # variance = accuracies.std()
+# print(mean)
+# print(variance)
+# print('DONE')
+# exit()
 
 #Tuning the ANN
 from keras.wrappers.scikit_learn import KerasClassifier
@@ -160,22 +176,29 @@ from keras.layers import Dense
 def build_classifier(optimizer, num_layer_1, num_layer_2):
 	classifier = Sequential()
 	classifier.add(Dense(
-		output_dim=num_layer_1,
-		init='uniform',
+		units=num_layer_1,
+		kernel_initializer='uniform',
 		activation='relu',
 		input_dim=11
 		)
 	)
 	classifier.add(Dense(
-		output_dim=num_layer_1,
-		init='uniform',
+		units=num_layer_1,
+		kernel_initializer='uniform',
 		activation='relu'
 		)
 	)
 	classifier.add(Dense(
-		output_dim=num_layer_2,
-		init='uniform',
+		units=num_layer_2,
+		kernel_initializer='uniform',
 		activation='sigmoid'
+		)
+	)
+	classifier.add(
+	Dense(
+		units=1, #there is only one outcome when binary
+		kernel_initializer='uniform',
+		activation='sigmoid' #chose signmoid because likelyhood of churn is on a specturm -- lets us rank, also either 1, or 0, so good choice
 		)
 	)
 	classifier.compile(
@@ -188,7 +211,7 @@ def build_classifier(optimizer, num_layer_1, num_layer_2):
 classifier = KerasClassifier(build_fn=build_classifier)
 parameters = {
 	'batch_size': [15, 25],
-	'nb_epoch': [500, 700],
+	'epochs': [500, 700],
 	'optimizer': ['adam', 'rmsprop'],
 	'num_layer_1': [4, 6, 8, 11],
 	'num_layer_2': [4, 6, 8, 11]
@@ -197,7 +220,7 @@ parameters = {
 grid_search = GridSearchCV(
 	estimator=classifier,
 	param_grid=parameters,
-	scoring_metric='accuracy',
+	scoring='accuracy',
 	cv=10)
 
 grid_search = grid_search.fit(X_train, y_train)
