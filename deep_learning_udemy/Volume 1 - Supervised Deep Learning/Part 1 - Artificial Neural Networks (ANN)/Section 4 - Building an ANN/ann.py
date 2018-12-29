@@ -74,7 +74,7 @@ import keras
 # #Compiling the ANN
 # classifier.compile(
 # 	optimizer='adam', #a very efficient sochastic gradient descent algorithm
-# 	loss='binary_crossentropy', #categorical_crossentrophy if more non-binary -- choices can correpsond to the final activation function
+# 	loss='binary_crossentropy', #categorical_crossentrophy if more non-binary -- choices can correpsond to the final activation function. this is what model is trying to minimize via Gradient Descent
 # 	metrics=['accuracy'] #list of metrics to evaluate 
 # 	)
 
@@ -183,17 +183,17 @@ def build_classifier(optimizer, num_layer_1, num_layer_2):
 		)
 	)
 	classifier.add(Dense(
-		units=num_layer_1,
+		units=num_layer_2,
 		kernel_initializer='uniform',
 		activation='relu'
 		)
 	)
-	classifier.add(Dense(
-		units=num_layer_2,
-		kernel_initializer='uniform',
-		activation='sigmoid'
-		)
-	)
+	# classifier.add(Dense(
+	# 	units=num_layer_2,
+	# 	kernel_initializer='uniform',
+	# 	activation='sigmoid'
+	# 	)
+	# )
 	classifier.add(
 	Dense(
 		units=1, #there is only one outcome when binary
@@ -208,6 +208,7 @@ def build_classifier(optimizer, num_layer_1, num_layer_2):
 		)
 	return classifier
 
+#this takes over a day to run
 classifier = KerasClassifier(build_fn=build_classifier)
 parameters = {
 	'batch_size': [15, 25],
