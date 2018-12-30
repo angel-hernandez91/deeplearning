@@ -71,6 +71,7 @@ train_datagen = ImageDataGenerator(
 
 test_datagen = ImageDataGenerator(rescale=1.0/255)
 
+#set up the training data
 training_set = train_datagen.flow_from_directory(
   'dataset/training_set', #path to images
   target_size=(64, 64), #size of the images the CNN expected
@@ -85,6 +86,7 @@ test_set = test_datagen.flow_from_directory(
   class_mode='binary'
   )
 
+#fit the model and run it
 classifier.fit_generator(
   training_set,
   steps_per_epoch=8000, #number of images in the training set
@@ -94,4 +96,37 @@ classifier.fit_generator(
   verbose=1,
   use_multiprocessing=True
   )
+
+#making a single prediction
+import numpy as np
+import keras.preprocessing as image
+
+test_image = image.load_img(
+  'dataset/single_prediction/cat_or_dog1.jpg',
+  target_size=(64, 64)
+  )
+
+test_image = image.img_to_array(test_image) #creates an array for 3 dimentions to represent the loaded image
+
+#add an extra dimension to the image, this dimension represents the batch, which the predict image requires
+test_image = np.expand_dims(
+  test_image,
+  axis=0 #rows
+  )
+
+result = classifier.predict(test_image)
+
+training_set.class_indicies #the index that corresponds to the classes in the model
+
+if result[0][0] == 1:
+  prediction = 'dog'
+elif result[0][0] == 0:
+  prediction = 'cat'
+else:
+  raise Exception("Unexpected Result")
+
+
+  
+
+
 
