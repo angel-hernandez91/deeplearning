@@ -126,7 +126,7 @@ else:
   raise Exception("Unexpected Result")
 
 
-  
+#the ann can still be tunned to get better accuracy -- to slow on this machine
 
 
 
