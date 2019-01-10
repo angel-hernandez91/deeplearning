@@ -16,3 +16,9 @@ inArray = img_to_array(inImage)
 inArray = kb.variable(preprocess_input(np.expand_dims(inArray, axis=0)), dtype='float32')
 
 print(inArray.shape)
+
+textureImage = load_img(path=textureInPath, target_size=target_size)
+textureArray = img_to_array(textureImage)
+textureArray = kb.variable(preprocess_input(np.expand_dims(textureArray, axis=0)), dtype='float32')
+
+print(textureArray.shape)
