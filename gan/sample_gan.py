@@ -52,7 +52,6 @@ class GAN():
     def build_generator(self):
 
         noise_shape = (100,)
-
         model = Sequential()
 
         model.add(Dense(256, input_shape=noise_shape))
@@ -67,7 +66,7 @@ class GAN():
         model.add(Dense(np.prod(self.img_shape), activation='tanh'))
         model.add(Reshape(self.img_shape))
 
-        model.summary()
+        
 
         noise = Input(shape=noise_shape)
         img = model(noise)
@@ -101,13 +100,14 @@ class GAN():
         for myFile in files:
             image = cv2.imread(myFile)
             image = cv2.resize(image, (128, 128))
+
             X_data.append(image)
 
         X_train = np.array(X_data)
 
         # Rescale -1 to 1
         X_train = (X_train.astype(np.float32) - 127.5) / 127.5
-        print(X_train.shape)
+
         # X_train = np.expand_dims(X_train, axis=3)
 
         half_batch = int(batch_size / 2)
@@ -163,9 +163,10 @@ class GAN():
 
         fig, axs = plt.subplots(r, c)
         cnt = 0
+        print(gen_imgs[cnt].shape)
         for i in range(r):
             for j in range(c):
-                axs[i,j].imshow(gen_imgs[cnt, :,:,0])
+                axs[i,j].imshow(cv2.cvtColor(gen_imgs[cnt], cv2.COLOR_BGR2RGB))
                 axs[i,j].axis('off')
                 cnt += 1
         fig.savefig("img_out/deep_cat_%d.png" % epoch)
@@ -174,7 +175,7 @@ class GAN():
 
 if __name__ == '__main__':
     gan = GAN()
-    gan.train(epochs=40000, batch_size=128, save_interval=500)
+    gan.train(epochs=80000, batch_size=32, save_interval=5000)
 
 
 
