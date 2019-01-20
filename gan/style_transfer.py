@@ -64,7 +64,7 @@ def get_style_loss(ws, Gs, As):
 		N_l = kb.int_shape(G)[0]
 		G_gram = get_Gram_matrix(G)
 		A_gram = get_Gram_matrix(A)
-		sLoss = sLos + (w * 0.25 * kb.sum(kb.square(G_gram - A_gram)) / (N_l**2 * M_l**2))
+		sLoss = sLoss + (w * 0.25 * kb.sum(kb.square(G_gram - A_gram)) / (N_l**2 * M_l**2))
 	return sLoss
 
 def get_total_loss(seedPlaceholder, alpha=1.0, beta=10000.0):
@@ -108,7 +108,7 @@ P = get_feature_reps(x=inArray, layer_names=[cLayerName], model=cModel)[0]
 As = get_feature_reps(x=textureArray, layer_names=sLayerNames, model=sModel)
 ws = np.ones(len(sLayerNames))/float(len(sLayerNames))
 
-iterations = 600
+iterations = 10
 x_val = seedImage.flatten()
 xopt, f_val, info= fmin_l_bfgs_b(calculate_loss, x_val, fprime=get_grad,
 							maxiter=iterations, disp=True)

@@ -17,14 +17,6 @@ import argparse
 
 from keras.applications import inception_v3
 from keras import backend as K
-import ssl
-
-try:
-    _create_unverified_https_context = ssl._create_unverified_context
-except AttributeError:
-    pass
-else:
-    ssl._create_default_https_context = _create_unverified_https_context
 
 parser = argparse.ArgumentParser(description='Deep Dreams with Keras.')
 parser.add_argument('base_image_path', metavar='base', type=str,
@@ -43,10 +35,10 @@ result_prefix = args.result_prefix
 # You can tweak these setting to obtain new visual effects.
 settings = {
     'features': {
-        'mixed2': 0.4,
-        'mixed3': 0.1,
-        'mixed4': 2.5,
-        'mixed5': 1,
+        'mixed2': 0.2,
+        'mixed3': 0.5,
+        'mixed4': 2.,
+        'mixed5': 1.5,
     },
 }
 
@@ -163,8 +155,8 @@ and compare the result to the (resized) original image.
 step = 0.01  # Gradient ascent step size
 num_octave = 3  # Number of scales at which to run gradient ascent
 octave_scale = 1.4  # Size ratio between scales
-iterations = 40  # Number of ascent steps per scale
-max_loss = 10.0
+iterations = 1  # Number of ascent steps per scale
+max_loss = 10.
 
 img = preprocess_image(base_image_path)
 if K.image_data_format() == 'channels_first':
