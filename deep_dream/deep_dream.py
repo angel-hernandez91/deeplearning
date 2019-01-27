@@ -153,10 +153,10 @@ and compare the result to the (resized) original image.
 
 # Playing with these hyperparameters will also allow you to achieve new effects
 step = 0.01  # Gradient ascent step size
-num_octave = 3  # Number of scales at which to run gradient ascent
-octave_scale = 1.4  # Size ratio between scales
-iterations = 1  # Number of ascent steps per scale
-max_loss = 10.
+num_octave = 6 # Number of scales at which to run gradient ascent
+octave_scale = 0.9 # Size ratio between scales
+iterations = 500  # Number of ascent steps per scale
+max_loss = 100.0
 
 img = preprocess_image(base_image_path)
 if K.image_data_format() == 'channels_first':
